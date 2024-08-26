@@ -13,7 +13,7 @@ const ChessGame = () => {
   const {
     player,
     winner,
-    moves, 
+    moves,
     validMoves,
     handleMove,
     boardState,
@@ -42,54 +42,38 @@ const ChessGame = () => {
     );
   }
 
+  if (player === "") {
+    return (
+      <div className="font-sans text-center p-4 min-h-48 flex items-center justify-center">
+        <button onClick={joinGame} className="bg-green-500 text-white p-2">
+          Join Game
+        </button>
+      </div>
+    );
+  }
+
+  const PlayerText = <h2 className="text-xl mb-4">Player: {player}</h2>;
+
   return (
     <div className="font-sans text-center p-4">
-      {player &&
-        <h2 className="text-xl mb-4">Player: {player}</h2>}
+      {player && PlayerText}
       {boardState.length > 0 && (
-        <div
-          className="grid grid-cols-5 gap-1 mx-auto mb-4"
-          style={{ maxWidth: "260px" }}
-        >
-          {Array.from({ length: 25 }).map((_, index) => {
-            let x = Math.floor(index / 5);
-            let y = index % 5;
-            if (player == "B") {
-              x = 4 - x;
-              y = 4 - y;
-            }
-            const piece = boardState[x] && boardState[x][y];
-            return (
-              <div
-                key={index}
-                onClick={() => getPieceMoves(x, y)}
-                className={`w-12 h-12 bg-gray-200 border border-gray-300 
-                flex items-center justify-center cursor-pointer ${getBgColor(x, y)
-                  }`}
-                style={{
-                  border: selectedPiece.x === x && selectedPiece.y === y
-                    ? "2px solid red"
-                    : "1px solid #ccc",
-                }}
-              >
-                {piece ? `${piece.player}${piece.type}` : ""}
-              </div>
-            );
-          })}
-        </div>
+        <BoardView
+          player={player}
+          maxWidth={"250px"}
+          boardState={boardState}
+          selectedPiece={selectedPiece}
+          getPieceMoves={getPieceMoves}
+          getBgColor={getBgColor}
+        />
       )}
-      <MovesList
-        moves={moves}
-        validMoves={validMoves}
-        onMoveClick={handleMove}
-      />
-      {player === "" &&
-        (
-          <button onClick={joinGame} className="bg-green-500 text-white p-2">
-            Join Game
-          </button>
-        )}
-
+      {(moves && moves.length > 0) && (
+        <MovesList
+          moves={moves}
+          validMoves={validMoves}
+          onMoveClick={handleMove}
+        />
+      )}
       {history.length > 0 && (
         <div className="mt-4">
           <h2 className="text-xl mb-4">History</h2>
@@ -112,27 +96,23 @@ const MovesList: React.FC<MovesListProps> = (
   const isValidMove = (move: Move) => validMoves.includes(move);
   return (
     <div>
-      {moves && moves.length > 0
-        ? (
-          <div className="text-center">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {moves.map((move, index) => (
-                <button
-                  disabled={!isValidMove(move)}
-                  key={index}
-                  onClick={() => onMoveClick(move)}
-                  className={`py-2 px-4 w-16 ${!isValidMove(move)
-                      ? "bg-gray-900"
-                      : "bg-gray-800 hover:bg-gray-600"
-                    } text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}
-                >
-                  {move}
-                </button>
-              ))}
-            </div>
-          </div>
-        )
-        : <></>}
+      <div className="text-center">
+        <div className="flex flex-wrap gap-2 justify-center">
+          {moves.map((move, index) => (
+            <button
+              disabled={!isValidMove(move)}
+              key={index}
+              onClick={() => onMoveClick(move)}
+              className={`py-2 px-4 w-16 ${!isValidMove(move)
+                  ? "bg-gray-900"
+                  : "bg-gray-800 hover:bg-gray-600"
+                } text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}
+            >
+              {move}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -154,6 +134,53 @@ function HistoryList({ history }: { history: HistoryItem[] }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+interface BoardViewProps {
+  player: string;
+  maxWidth: string;
+  boardState: Piece[][];
+  selectedPiece: { x: number; y: number };
+  getPieceMoves: (x: number, y: number) => void;
+  getBgColor: (x: number, y: number) => string;
+}
+
+function BoardView(
+  { player, maxWidth, boardState, selectedPiece, getPieceMoves, getBgColor }:
+    BoardViewProps,
+) {
+  return (
+    <div
+      className="grid grid-cols-5 gap-1 mx-auto mb-4"
+      style={{ maxWidth: maxWidth }}
+    >
+      {Array.from({ length: 25 }).map((_, index) => {
+        let x = Math.floor(index / 5);
+        let y = index % 5;
+        if (player == "B") {
+          x = 4 - x;
+          y = 4 - y;
+        }
+        const piece: Piece = boardState[x] && boardState[x][y];
+        return (
+          <div
+            key={index}
+            onClick={() => getPieceMoves(x, y)}
+            className={`w-12 h-12 bg-gray-200 border border-gray-300 
+                flex items-center justify-center cursor-pointer ${getBgColor(x, y)
+              }`}
+            style={{
+              border: selectedPiece.x === x && selectedPiece.y === y
+                ? "2px solid red"
+                : "1px solid #ccc",
+            }}
+          >
+            {piece ? `${piece.player}${piece.type}` : ""}
+          </div>
+        );
+      })}
     </div>
   );
 }
