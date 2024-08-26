@@ -92,7 +92,7 @@ The objective is to eliminate all of the opponent's characters.
 - [x] **Spectator Mode**: Implemented for observing ongoing games.
 - [ ] **Chat Feature**: Added for player communication.
 - [ ] **AI Opponent**: Implemented a basic AI for single-player mode.
-- [ ]- **Replay System**: Allows players to review past games.
+- [ ] **Replay System**: Allows players to review past games.
 
 ## Code Quality 
 
