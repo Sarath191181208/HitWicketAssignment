@@ -194,8 +194,8 @@ function BoardView(
 }
 
 function PieceView({ piece }: { piece: Piece }) {
-  const playerColor = piece.player === "A" ? "bg-white" : "bg-black";
-  const pieceStyle = piece.player === "A" ? "text-black" : "text-white";
+  const playerColor = piece.player === "A" ? "bg-gray-300" : "bg-black";
+  const pieceStyle = piece.player === "A" ? "text-black border border-black" : "text-white border border-gray-700";
 
   return (
     <div
