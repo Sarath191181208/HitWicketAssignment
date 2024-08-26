@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chess-like Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(5, 50px);
+      grid-template-rows: repeat(5, 50px);
+      gap: 1px;
+      margin: 20px auto;
+      max-width: 260px;
+    }
+
+    .cell {
+      width: 50px;
+      height: 50px;
+      background-color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .cell:nth-child(odd) {
+      background-color: #e0e0e0;
+    }
+
+    .controls {
+      margin: 20px;
+    }
+
+    .move-input {
+      margin-bottom: 10px;
+    }
+
+    .log {
+      margin-top: 20px;
+      max-height: 100px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      background-color: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Chess-like Game</h1>
+    <h2 id="player"> <h2>
+  <div id="board" class="board"></div>
+  <div class="controls">
+    <input id="moveInput" type="text" placeholder="Enter move (e.g., A-P1:F)" class="move-input" />
+    <button id="sendMove">Send Move</button>
+    <button id="joinGame">Join Game</button>
+  </div>
+  <div id="log" class="log"></div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const socket = io(); // Connect to the server
+
+    // Join the game
+    document.getElementById("joinGame").addEventListener("click", () => {
+      socket.emit("join-game");
+    });
+
+    // Generate the board
+    const boardElement = document.getElementById("board");
+    const createBoard = () => {
+      boardElement.innerHTML = "";
+      for (let i = 0; i < 25; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.id = `cell-${i}`;
+        cell.dataset.x = Math.floor(i / 5);
+        cell.dataset.y = i % 5;
+        boardElement.appendChild(cell);
+      }
+    };
+    createBoard();
+
+    // Function to update the board with piece positions
+    const updateBoard = (boardState) => {
+      document.querySelectorAll(".cell").forEach((cell) => {
+        cell.innerHTML = ""; // Clear existing piece
+      });
+      const board = boardState.board;
+      console.log(boardState);
+      // don't use foreach
+      for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+          if (board[i][j] === null) continue;
+          const cell = document.getElementById(`cell-${i * 5 + j}`);
+          cell.innerHTML = board[i][j].player + board[i][j].type;
+        }
+      }
+    };
+
+    // Handle incoming messages
+    socket.on("gameState", (data) => {
+      updateBoard(data);
+    });
+
+    socket.on("error", (message) => {
+      document.getElementById("log").innerHTML +=
+        `<div>Error: ${message}</div>`;
+    });
+
+    socket.on("player", (message) => {
+      document.getElementById("player").innerHTML = message;
+    });
+
+    socket.on("moveLog", (message) => {
+      document.getElementById("log").innerHTML += `<div>${message}</div>`;
+    });
+
+    // Send move command
+    document.getElementById("sendMove").addEventListener("click", () => {
+      const moveInput = document.getElementById("moveInput").value;
+      socket.emit("move", moveInput);
+      document.getElementById("moveInput").value = ""; // Clear input
+    });
+  </script>
+</body>
+
+</html>
