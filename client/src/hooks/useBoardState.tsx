@@ -14,8 +14,7 @@ export function useBoardState(){
   const [winner, setWinner] = useState<PlayerType | null>(null);
   const [boardState, setBoardState] = useState([]);
   const [player, setPlayer] = useState("");
-  //const [log, setLog] = useState("");
-  const [errors, setErrors] = useState<string[]>([]);
+  const [_, setErrors] = useState<string[]>([]);
 
   const [selectedPiece, setSelectedPiece] = useState({ x: -1, y: -1 });
   const [highlightedSquares, setHighlightedSquares] = useState<
@@ -63,7 +62,7 @@ export function useBoardState(){
   }, []);
 
   const handleMove = (move: Move) => {
-    const piece = boardState[selectedPiece.x][selectedPiece.y];
+    const piece: Piece = boardState[selectedPiece.x][selectedPiece.y];
     const encodedMove = `${player}-${piece.type}:${move}`;
     socket.emit("move", encodedMove);
     setHighlightedSquares([]);
@@ -77,7 +76,7 @@ export function useBoardState(){
   };
 
   const getPieceMoves = (x: number, y: number) => {
-    const piece = boardState[x] && boardState[x][y];
+    const piece: Piece = boardState[x] && boardState[x][y];
     if (!piece) {
       return;
     }
@@ -112,8 +111,8 @@ export function useBoardState(){
           break;
         }
 
-        if (!piece.type != "H2") {
-          const _otherPiece = boardState[y][x];
+        if (piece.type != "H2") {
+          const _otherPiece: Piece = boardState[y][x];
           if (_otherPiece && _otherPiece.player === player) {
             isValid = false;
             break;
