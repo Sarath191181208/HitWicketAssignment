@@ -7,6 +7,7 @@ The objective is to eliminate all of the opponent's characters.
 
 ## Demo 
 ![Image](./images/screenshot.png)
+![Image](./images/screenshot-2.png)
 
 ## Project Structure
 - [Server](https://github.com/Sarath191181208/VangipuramSrinivasaSarathChandra_21BCE9853/tree/master/client): Handles communication with clients via Websockets.
