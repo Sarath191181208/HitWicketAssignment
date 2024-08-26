@@ -14,7 +14,8 @@ The objective is to eliminate all of the opponent's characters.
 - [Game](https://github.com/Sarath191181208/VangipuramSrinivasaSarathChandra_21BCE9853/tree/master/game) : Handles all the things related to game logic, game state etc.
 
 
-# Turn-Based Chess-like Game with Websocket Communication
+
+## Technologies used
 
 ![TypeScript](https://img.shields.io/badge/-Typescript-black.svg?style=for-the-badge&logo=typescript&colorB=555)
 ![React](https://img.shields.io/badge/-React-black.svg?style=for-the-badge&logo=react&colorB=555)
@@ -22,7 +23,6 @@ The objective is to eliminate all of the opponent's characters.
 ![Express](https://img.shields.io/badge/-Express-black.svg?style=for-the-badge&logo=express&colorB=555)
 ![Socket.io](https://img.shields.io/badge/-Socket.io-black.svg?style=for-the-badge&logo=socketdotio&colorB=555)
 
-## Overview
 
 ### Setting Up the Server
 
