@@ -59,14 +59,14 @@ const ChessGame = () => {
       {player && PlayerText}
       {boardState.length > 0 && (
         <div className="max-w-lg flex  justify-center items-center w-full ">
-        <BoardView
-          player={player}
-          maxWidth={"400px"}
-          boardState={boardState}
-          selectedPiece={selectedPiece}
-          getPieceMoves={getPieceMoves}
-          getBgColor={getBgColor}
-        />
+          <BoardView
+            player={player}
+            maxWidth={"400px"}
+            boardState={boardState}
+            selectedPiece={selectedPiece}
+            getPieceMoves={getPieceMoves}
+            getBgColor={getBgColor}
+          />
         </div>
       )}
       {(moves && moves.length > 0) && (
@@ -78,12 +78,8 @@ const ChessGame = () => {
           />
         </div>
       )}
-      {history.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-xl mb-4">History</h2>
-          <HistoryList history={history} />
-        </div>
-      )}
+
+      {history.length > 0 && <HistoryTable history={history} />}
     </div>
   );
 };
@@ -115,23 +111,35 @@ const MovesList: React.FC<MovesListProps> = (
   );
 };
 
-function HistoryList({ history }: { history: HistoryItem[] }) {
+function HistoryTable({ history }: { history: HistoryItem[] }) {
   return (
-    <div>
-      {history.map((item, index) => (
-        <div key={index} className="flex items-center justify-center">
-          <div className="flex items-center">
-            <div>{item.move}</div>
-            {(item.removedPieces.length > 0) && (
-              <div className="ml-2 text-red-900">
-                Removed: {item.removedPieces.map((p) =>
-                  p.player + p.type
-                ).join(", ")}
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
+    <div className="border border-gray-900/60 rounded-lg p-8 max-w-lg w-full">
+      <h2 className="text-2xl mb-4 font-bold">History Table</h2>
+      <table className="w-full table-auto">
+        <thead>
+          <tr className="bg-gray-900/20 text-gray-700">
+            <th className="px-4 py-3 text-left font-medium">S.No</th>
+            <th className="px-4 py-3 text-left font-medium">Move</th>
+            <th className="px-4 py-3 text-left font-medium">Captured</th>
+          </tr>
+        </thead>
+        <tbody>
+          {history.map((item, index) => (
+            <tr
+              key={index}
+              className={`${(index % 2 == 1) ? "bg-gray-900/30" : ""}`}
+            >
+              <td className="px-4 py-3">{index + 1}</td>
+              <td className="px-4 py-3">{item.move}</td>
+              <td className="px-4 py-3 text-sm text-red-900">
+                {item.removedPieces.map((p) => p.player + "-" + p.type).join(
+                  ", ",
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -186,9 +194,11 @@ function BoardView(
 function PieceView({ piece }: { piece: Piece }) {
   const playerColor = piece.player === "A" ? "bg-white" : "bg-black";
   const pieceStyle = piece.player === "A" ? "text-black" : "text-white";
-  
+
   return (
-    <div className={`max-w-12 max-h-12 p-5 flex items-center justify-center rounded-full ${playerColor} ${pieceStyle} shadow-lg`}>
+    <div
+      className={`max-w-12 max-h-12 p-5 flex items-center justify-center rounded-full ${playerColor} ${pieceStyle} shadow-lg`}
+    >
       <span className="text-md font-bold">
         {piece.type}
       </span>
