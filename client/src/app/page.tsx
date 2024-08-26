@@ -115,7 +115,7 @@ const MovesList: React.FC<MovesListProps> = (
 
 function HistoryTable({ history }: { history: HistoryItem[] }) {
   return (
-    <div className="border border-gray-900/60 rounded-lg p-8 max-w-lg w-full">
+    <div className="border border-gray-900/60 rounded-lg p-8 max-w-lg w-full overflow-y-scroll max-h-[450px]">
       <h2 className="text-2xl mb-4 font-bold">History Table</h2>
       <table className="w-full table-auto">
         <thead>
