@@ -87,12 +87,12 @@ The objective is to eliminate all of the opponent's characters.
 - **Invalid Actions**: Moves are validated on both client-side and server-side to prevent illegal actions.
 
 ## Bonus challanges
--[ ] **Hero3**: Added a new character type with complex movement patterns.
--[ ] **Dynamic Team Composition**: Players can choose their team composition at the start of each game.
--[x] **Spectator Mode**: Implemented for observing ongoing games.
--[ ]**Chat Feature**: Added for player communication.
--[ ] **AI Opponent**: Implemented a basic AI for single-player mode.
--[ ]- **Replay System**: Allows players to review past games.
+- [ ] **Hero3**: Added a new character type with complex movement patterns.
+- [ ] **Dynamic Team Composition**: Players can choose their team composition at the start of each game.
+- [x] **Spectator Mode**: Implemented for observing ongoing games.
+- [ ] **Chat Feature**: Added for player communication.
+- [ ] **AI Opponent**: Implemented a basic AI for single-player mode.
+- [ ]- **Replay System**: Allows players to review past games.
 
 ## Code Quality 
 
