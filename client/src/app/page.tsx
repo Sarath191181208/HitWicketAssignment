@@ -182,7 +182,7 @@ function BoardView(
             style={{
               border: selectedPiece.x === x && selectedPiece.y === y
                 ? "2px solid red"
-                : "",
+                : "1px solid gray",
             }}
           >
             {piece && <PieceView piece={piece} />}
