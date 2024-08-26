@@ -55,31 +55,33 @@ const ChessGame = () => {
   const PlayerText = <h2 className="text-xl mb-4">Player: {player}</h2>;
 
   return (
-    <div className="p-4 grid place-items-center">
-      {player && PlayerText}
-      {boardState.length > 0 && (
-        <div className="max-w-lg flex  justify-center items-center w-full ">
-          <BoardView
-            player={player}
-            maxWidth={"400px"}
-            boardState={boardState}
-            selectedPiece={selectedPiece}
-            getPieceMoves={getPieceMoves}
-            getBgColor={getBgColor}
-          />
-        </div>
-      )}
-      {(moves && moves.length > 0) && (
-        <div className="flex flex-wrap gap-2 max-w-lg justify-center">
-          <MovesList
-            moves={moves}
-            validMoves={validMoves}
-            onMoveClick={handleMove}
-          />
-        </div>
-      )}
+    <div className="p-4 flex flex-wrap justify-center pt-12">
+      <div className="w-full grid place-items-center max-w-md">
+        {player && PlayerText}
+        {boardState.length > 0 && (
+          <div className="max-w-lg flex justify-center items-center w-full ">
+            <BoardView
+              player={player}
+              maxWidth={"400px"}
+              boardState={boardState}
+              selectedPiece={selectedPiece}
+              getPieceMoves={getPieceMoves}
+              getBgColor={getBgColor}
+            />
+          </div>
+        )}
+        {(moves && moves.length > 0) && (
+          <div className="flex flex-wrap gap-2 max-w-lg justify-center mb-5">
+            <MovesList
+              moves={moves}
+              validMoves={validMoves}
+              onMoveClick={handleMove}
+            />
+          </div>
+        )}
+      </div>
 
-      {history.length > 0 && <HistoryTable history={history} />}
+      <HistoryTable history={history} />
     </div>
   );
 };
