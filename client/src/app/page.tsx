@@ -28,7 +28,7 @@ const ChessGame = () => {
     if (highlightedSquares.some((pos) => pos.x === x && pos.y === y)) {
       return "bg-red-900";
     }
-    return (x + y) % 2 === 0 ? "bg-gray-500" : "bg-gray-400";
+    return (x + y) % 2 === 0 ? "bg-gray-900" : "bg-gray-950";
   };
 
   if (winner) {
@@ -55,7 +55,7 @@ const ChessGame = () => {
   const PlayerText = <h2 className="text-xl mb-4">Player: {player}</h2>;
 
   return (
-    <div className="p-4 flex flex-wrap justify-center pt-12">
+    <div className="p-4 flex flex-wrap justify-center items-center pt-12">
       <div className="w-full grid place-items-center max-w-md">
         {player && PlayerText}
         {boardState.length > 0 && (
@@ -103,7 +103,7 @@ const MovesList: React.FC<MovesListProps> = (
           disabled={!isValidMove(move)}
           key={index}
           onClick={() => onMoveClick(move)}
-          className={`py-2 px-4 w-16 ${!isValidMove(move) ? "bg-gray-900" : "bg-gray-800 hover:bg-gray-600"
+          className={`py-2 px-4 w-16 ${!isValidMove(move) ? "bg-gray-950/30" : "bg-gray-800 hover:bg-gray-600"
             } text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}
         >
           {move}
@@ -115,7 +115,7 @@ const MovesList: React.FC<MovesListProps> = (
 
 function HistoryTable({ history }: { history: HistoryItem[] }) {
   return (
-    <div className="border border-gray-900/60 rounded-lg p-8 max-w-lg w-full overflow-y-scroll max-h-[450px]">
+    <div className="ml-12 border border-gray-900/60 rounded-lg p-8 max-w-lg w-full overflow-y-scroll max-h-[500px]">
       <h2 className="text-2xl mb-4 font-bold">History Table</h2>
       <table className="w-full table-auto">
         <thead>
@@ -182,7 +182,7 @@ function BoardView(
             style={{
               border: selectedPiece.x === x && selectedPiece.y === y
                 ? "2px solid red"
-                : "1px solid #ccc",
+                : "",
             }}
           >
             {piece && <PieceView piece={piece} />}
