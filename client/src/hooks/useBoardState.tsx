@@ -4,13 +4,12 @@ import { getMoves, getPath, inBounds } from "game/src";
 import { Move, Piece, PlayerType } from "game/src/board/board";
 import { socket } from "@/app/socket";
 
-
 interface HistoryItem {
   move: string;
   removedPieces: Piece[];
 }
 
-export function useBoardState(){
+export function useBoardState() {
   const [winner, setWinner] = useState<PlayerType | null>(null);
   const [boardState, setBoardState] = useState([]);
   const [player, setPlayer] = useState("");
@@ -35,7 +34,6 @@ export function useBoardState(){
     });
 
     socket.on("error", (message) => {
-      //setLog((prev) => `${prev}<div>Error: ${message}</div>`);
       setErrors((prev) => [...prev, message]);
       alert(message);
       console.error(message);
@@ -49,15 +47,11 @@ export function useBoardState(){
       setHistory(data);
     });
 
-    //socket.on("moveLog", (message) => {
-    //  setLog((prev) => `${prev}<div>${message}</div>`);
-    //});
-
     return () => {
       socket.off("gameState");
       socket.off("error");
       socket.off("player");
-      //socket.off("moveLog");
+      socket.off("gameHistory");
     };
   }, []);
 
@@ -86,70 +80,65 @@ export function useBoardState(){
       return;
     }
 
-    setSelectedPiece({ x, y });
     const resMoves: Move[] = getMoves(piece.type);
 
-    // move to path dict
-    //let pathDict:{string: [number, number]}= {};
-    let pathDict: { [key: string]: [number, number][] } = {};
-    for (let i = 0; i < resMoves.length; i++) {
-      const key = resMoves[i];
-      pathDict[key] = getPath(player, piece.type, y, x, key);
-    }
-
+    type SingleMovePath = [number, number][];
+    type CordinateDict = { [key: string]: SingleMovePath };
+    let pathDict: CordinateDict = resMoves.reduce(
+      (dict, key) => {
+        dict[key] = getPath(player, piece.type, y, x, key);
+        return dict;
+      },
+      {} as CordinateDict,
+    );
     // filter out invalid moves
-    let validMoves: Move[] = [];
-    for (let i = 0; i < resMoves.length; i++) {
-      const key = resMoves[i];
-      const path = pathDict[key];
-      let isValid = true;
-      // check if path is valid and if no piece is blocking
-      for (let j = 0; j < path.length; j++) {
-        const [x, y] = path[j];
-        if (!inBounds(x, y)) {
-          isValid = false;
-          break;
-        }
-
-        if (piece.type != "H2") {
-          const _otherPiece: Piece = boardState[y][x];
-          if (_otherPiece && _otherPiece.player === player) {
-            isValid = false;
-            break;
-          }
-        }
-      }
-      if (isValid) {
-        validMoves.push(key);
-      }
-    }
+    let validMoves: Move[] = resMoves.filter((nextMove) => {
+      const path = pathDict[nextMove];
+      return isPathValid(player, path, boardState);
+    });
 
     // set highlighted squares
-    let highlightedSquares: { x: number; y: number }[] = [];
-    for (let i = 0; i < validMoves.length; i++) {
-      const key = validMoves[i];
-      const path = pathDict[key];
-      path.forEach((pos) => {
-        highlightedSquares.push({ x: pos[1], y: pos[0] });
-      });
-    }
+    let highlightedSquares: { x: number; y: number }[] = validMoves.flatMap(
+      (key) => pathDict[key].map(([y, x]) => ({ x, y }))
+    );
 
+    // set updated state
+    setSelectedPiece({ x, y });
     setHighlightedSquares(highlightedSquares);
     setValidMoves(validMoves);
     setMoves(resMoves);
   };
 
   return {
-    player, 
+    player,
     winner,
     selectedPiece,
     highlightedSquares,
     boardState,
-    moves, 
+    moves,
     validMoves,
     history,
     handleMove,
     joinGame,
     getPieceMoves,
+  };
+}
+
+function isPathValid(
+  player: PlayerType,
+  path: [number, number][],
+  boardState: Piece[][],
+): boolean {
+  for (let j = 0; j < path.length; j++) {
+    const [x, y] = path[j];
+    if (!inBounds(x, y)) {
+      return false;
+    }
+
+    const _otherPiece: Piece = boardState[y][x];
+    if (_otherPiece && _otherPiece.player === player) {
+      return false;
+    }
   }
+  return true;
 }
