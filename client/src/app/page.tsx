@@ -70,15 +70,24 @@ const ChessGame = () => {
             />
           </div>
         )}
-        {(moves && moves.length > 0) && (
-          <div className="flex flex-wrap gap-2 max-w-lg justify-center mb-5">
-            <MovesList
-              moves={moves}
-              validMoves={validMoves}
-              onMoveClick={handleMove}
-            />
-          </div>
-        )}
+
+        <div className="flex flex-wrap gap-2 max-w-lg justify-center mb-5">
+          {(moves && moves.length > 0)
+            ? (
+              <MovesList
+                moves={moves}
+                validMoves={validMoves}
+                onMoveClick={handleMove}
+              />
+            )
+            : (
+              <MovesList
+                moves={["L", "R", "F", "B"]}
+                validMoves={[]}
+                onMoveClick={() => {}}
+              />
+            )}
+        </div>
       </div>
 
       <HistoryTable history={history} />
@@ -103,7 +112,9 @@ const MovesList: React.FC<MovesListProps> = (
           disabled={!isValidMove(move)}
           key={index}
           onClick={() => onMoveClick(move)}
-          className={`py-2 px-4 w-16 ${!isValidMove(move) ? "bg-gray-950/30" : "bg-gray-800 hover:bg-gray-600"
+          className={`py-2 px-4 w-16 ${!isValidMove(move)
+              ? "bg-gray-950/30"
+              : "bg-gray-800 hover:bg-gray-600"
             } text-white rounded-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75`}
         >
           {move}
@@ -195,7 +206,9 @@ function BoardView(
 
 function PieceView({ piece }: { piece: Piece }) {
   const playerColor = piece.player === "A" ? "bg-gray-300" : "bg-black";
-  const pieceStyle = piece.player === "A" ? "text-black border border-black" : "text-white border border-gray-700";
+  const pieceStyle = piece.player === "A"
+    ? "text-black border border-black"
+    : "text-white border border-gray-700";
 
   return (
     <div
